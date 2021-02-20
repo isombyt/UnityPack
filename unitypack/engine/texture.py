@@ -104,6 +104,10 @@ IMPLEMENTED_FORMATS = (
 	TextureFormat.ASTC_RGBA_8x8,
 	TextureFormat.ASTC_RGBA_10x10,
 	TextureFormat.ASTC_RGBA_12x12,
+	TextureFormat.PVRTC_RGB2,
+	TextureFormat.PVRTC_RGBA2,
+	TextureFormat.PVRTC_RGB4,
+	TextureFormat.PVRTC_RGBA4,
 )
 
 
@@ -181,7 +185,7 @@ class Texture2D(Texture):
 		elif self.format == TextureFormat.BC7:
 			codec = "bcn"
 			args = (7, )
-		elif self.format >= 48 and self.format <= 59:
+		elif self.format in(TextureFormat.ASTC_RGB_5x5, TextureFormat.ASTC_RGB_6x6, TextureFormat.ASTC_RGB_8x8, TextureFormat.ASTC_RGB_10x10, TextureFormat.ASTC_RGB_12x12, TextureFormat.ASTC_RGBA_5x5, TextureFormat.ASTC_RGBA_6x6, TextureFormat.ASTC_RGBA_8x8, TextureFormat.ASTC_RGBA_10x10, TextureFormat.ASTC_RGBA_12x12):
 			import astc_decomp
 			args_table = {
 				TextureFormat.ASTC_RGB_5x5: (5, 5, False),
@@ -197,6 +201,10 @@ class Texture2D(Texture):
 			}
 			codec = 'astc'
 			args = args_table[self.format]
+		elif self.format in (TextureFormat.PVRTC_RGB4, TextureFormat.PVRTC_RGBA4, TextureFormat.PVRTC_RGB2, TextureFormat.PVRTC_RGBA2):
+			import pvrtc_decoder
+			codec = 'pvrtc'
+			args = (0, )
 		else:
 			codec = "raw"
 			args = (self.format.pixel_format, )
