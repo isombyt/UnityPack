@@ -94,6 +94,16 @@ IMPLEMENTED_FORMATS = (
 	TextureFormat.DXT5,
 	TextureFormat.DXT5Crunched,
 	TextureFormat.BC7,
+	TextureFormat.ASTC_RGB_5x5,
+	TextureFormat.ASTC_RGB_6x6,
+	TextureFormat.ASTC_RGB_8x8,
+	TextureFormat.ASTC_RGB_10x10,
+	TextureFormat.ASTC_RGB_12x12,
+	TextureFormat.ASTC_RGBA_5x5,
+	TextureFormat.ASTC_RGBA_6x6,
+	TextureFormat.ASTC_RGBA_8x8,
+	TextureFormat.ASTC_RGBA_10x10,
+	TextureFormat.ASTC_RGBA_12x12,
 )
 
 
@@ -171,6 +181,22 @@ class Texture2D(Texture):
 		elif self.format == TextureFormat.BC7:
 			codec = "bcn"
 			args = (7, )
+		elif self.format >= 48 and self.format <= 59:
+			import astc_decomp
+			args_table = {
+				TextureFormat.ASTC_RGB_5x5: (5, 5, False),
+				TextureFormat.ASTC_RGB_6x6: (6, 6, False),
+				TextureFormat.ASTC_RGB_8x8: (8, 8, False),
+				TextureFormat.ASTC_RGB_10x10: (10, 10, False),
+				TextureFormat.ASTC_RGB_12x12: (12, 12, False),
+				TextureFormat.ASTC_RGBA_5x5: (5, 5, False),
+				TextureFormat.ASTC_RGBA_6x6: (6, 6, False),
+				TextureFormat.ASTC_RGBA_8x8: (8, 8, False),
+				TextureFormat.ASTC_RGBA_10x10: (10, 10, False),
+				TextureFormat.ASTC_RGBA_12x12: (10, 10, False),
+			}
+			codec = 'astc'
+			args = args_table[self.format]
 		else:
 			codec = "raw"
 			args = (self.format.pixel_format, )
